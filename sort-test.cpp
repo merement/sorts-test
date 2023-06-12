@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
     Engine engine = Engine::ALPHA;   
     if (args[0] == "--std") { engine = Engine::STD; }
     else if (args[0] == "--alpha") { engine = Engine::ALPHA; }
-    else return pass_err("Unknown engine (implemented: --std and --alpha)");
+    else { return pass_err("Unknown engine (implemented: --std and --alpha)"); }
 
     if (num_opts > SORT_MIN && num_opts <= SORT_MAX + 1)
     {
@@ -226,6 +226,8 @@ int main(int argc, char *argv[])
                                 str_readout + " instead");
             }
         }
-        else return pass_err("Unrecognized option " + std::string{args[1]});
+        else {
+            return pass_err("Unrecognized option " + std::string{args[1]});
+        }
     }
 }
