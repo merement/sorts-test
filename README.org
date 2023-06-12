@@ -1,0 +1,95 @@
+#+TITLE: Looking at AlphaDev's sorting functions
+#+AUTHOR: Misha Erementchouk
+#+EMAIL: merement@gmail.com
+#+DATE: 
+#+OPTIONS: tex: t LaTeX: t toc:nil ^:{}
+#+KEYWORDS:
+#+DESCRIPTION:
+
+A bit of action for sorting algorithms presented in
+[[https://doi-org/10.1038/s41586-023-06004-9][Mankowitz, D.J. et al. Faster sorting algorithms ... , Nature 618, 257–263 (2023)]]
+
+Because of some confusion about what exactly these algorithms are
+doing, here's a simple exposure of the functions as they are
+implemented in [[https://github.com/deepmind/alphadev/]].
+
+One can clearly see that highly optimized ad hoc sorters do outperform
+"generic" implementations.  On my computer, the results are
+
+#+begin_src sh
+$ ./sort-test --std 5000000
+STD:3 sort: 67 ms
+STD:4 sort: 97 ms
+STD:5 sort: 129 ms
+STD:6 sort: 163 ms
+STD:7 sort: 200 ms
+STD:8 sort: 241 ms
+
+$ ./sort-test --alpha 5000000
+AlphaDev:3 sort: 9 ms
+AlphaDev:4 sort: 13 ms
+AlphaDev:5 sort: 24 ms
+AlphaDev:6 sort: 30 ms
+AlphaDev:7 sort: 38 ms
+AlphaDev:8 sort: 45 ms
+#+end_src
+
+Of course, one has to take into consideration safety, portability, and
+all that. Therefore, these results do not call for any conclusion. The
+difference is still impressive, though.
+
+* Installation
+
+Use the supplied make-file (requires =clang++= supporting ~--std=c++20~)
+to compile the program 
+#+begin_src sh
+$ make
+#+end_src
+
+This will create the executable in the main directory. Available
+options:
+- ~make all~ - the same as just ~make~
+- ~make clean~ - removes all generated files including the executable
+- ~make pristine~ - removes all the generated files and directories.
+
+* Usage
+
+The executable accepts options:
+
+1. Mandatory: =--std= or =--alpha=. Chooses the implementation of sorting:
+   =--std= for ~std::sort~, ~--alpha~ for AlphaDev implementations.
+2. Optional: ~--group n~ with ~3 <= n <= 8~ specifies the size of sorted
+   groups from the standard input.
+
+#+begin_src sh
+$ ./sort-test --std 1000
+#+end_src
+Runs the ~std~ sort on 1000 samples of random groups with all sizes
+supported by the AlphaDev functions and reports running time. The
+number of samples is hard-limited by 5,000,000 (arbitrary number).
+
+#+begin_src sh
+$ ./sort-test --alpha 4 11 24 1 1
+#+end_src
+Uses the respective AlphaDev function to sort the provided array.
+
+#+begin_src sh
+$ echo "44 12 3 11 1" | ./sort-test --alpha --group 3
+#+end_src
+Splits the data supplied in the standard input into groups of 3, sorts
+them using the AlphaDev function and outputs the result.
+
+* On implementation
+
+Functions in ~sort_functions_test.cpp~ implementing AlphaDev's sorting
+algorithms are taken as is from [[https://github.com/deepmind/alphadev/]].
+The code was only modified by commenting out the ~gtest~ functionality
+and deriving the header file. These modifications, as reflected in the
+NOTICE section of ~sort_functions_test.cpp~ and ~sort_functions_test.hpp,~
+were not endorsed by the developers of AlphaDev.
+
+ The wrapper in ~sort-test.cpp~ was written purely for fun and to test
+ modern C++ waters. The code heavily relies on various type deduction
+ capabilities provided by C++20. These tricks are not needed for using
+ AlphaDev functions. Granted, I don't know much about C++ and cannot
+ say which standards those functions comply with.
