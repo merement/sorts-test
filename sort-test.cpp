@@ -23,16 +23,16 @@ using std::chrono::milliseconds;
 const auto SORT_MIN = 3;
 // maximal size of sorted arrays
 const auto SORT_MAX = 8;
-
+// maximal size of samples for timing
 const std::size_t MAX_SAMPLE = 5000000;
+
+const std::array alpha_function{Sort3AlphaDev, Sort4AlphaDev, Sort5AlphaDev,
+                          Sort6AlphaDev, Sort7AlphaDev, Sort8AlphaDev};
 
 enum Engine {
     STD,
     ALPHA,
 };
-
-const std::array alpha_function{Sort3AlphaDev, Sort4AlphaDev, Sort5AlphaDev,
-                          Sort6AlphaDev, Sort7AlphaDev, Sort8AlphaDev};
 
 void print_usage()
 {
@@ -68,9 +68,9 @@ void print_ar(auto &ar, std::string_view prefix)
 {
     cout << prefix;
     for (const auto i : ar) {
-        std::cout << "  " << i;
+        cout << "  " << i;
     }
-    std::cout << std::endl;
+    cout << std::endl;
 }
 
 int process_std(vector<int> &collection, std::size_t num_samples, int sort_size)
