@@ -209,21 +209,21 @@ int main(int argc, char *argv[])
             }
             else {
                 return pass_err("Expected 'long' at position 2, got " +
-                                std::string{args[cursor]} + " instead");
+                                str_readout + " instead");
             }        
     }
     else if (num_opts == 3) {
         if (args[1] == "--group") {
             int cursor = 2;
             std::string str_readout{args[cursor]};
-            auto outcome = attempt_to_read<std::size_t>(str_readout);
+            auto outcome = attempt_to_read<int>(str_readout);
             if (outcome && outcome.value() >= SORT_MIN &&
                 outcome.value() <= SORT_MAX) {
                 return process_cin(outcome.value(), engine);
             }
             else {
                 return pass_err("Expected '3 <= int <= 8' at position 3, got " +
-                                std::string{args[cursor]} + " instead");
+                                str_readout + " instead");
             }
         }
         else return pass_err("Unrecognized option " + std::string{args[1]});
